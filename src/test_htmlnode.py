@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
@@ -20,7 +20,10 @@ class TestHTMLNode(unittest.TestCase):
         self.assertNotEqual(node7.props_to_html(), test_props)
         self.assertEqual(node6.props, node5.props)
         
-
+    def test_leaf_to_html_p(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+        
 
 if __name__ == "__main__":
     unittest.main()
