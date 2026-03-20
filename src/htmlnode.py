@@ -1,3 +1,5 @@
+from textnode import TextNode, TextType
+
 class HTMLNode():
     def __init__(self, tag=None, value=None, children=None, props=None):
        self.tag = tag
@@ -29,7 +31,7 @@ class LeafNode(HTMLNode):
         return f"<{self.tag}{'' if not self.props else ' ' + self.props_to_html()}>{self.value}</{self.tag}>"
     
     def __repr__(self):
-        return f"LeafNode(tag={self.tag}, value={self.value}, props={self.props}"
+        return f"LeafNode(tag={self.tag}, value={self.value}, props={self.props})"
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
@@ -41,4 +43,22 @@ class ParentNode(HTMLNode):
         if not self.children:
             raise ValueError("Parent node must have children")
         return f"<{self.tag}{'' if not self.props else ' ' + self.props_to_html()}>{''.join([child.to_html() for child in self.children])}</{self.tag}>"
-    
+
+    def __repr__(self):
+        return f"ParentNode(tag={self.tag}, children={self.children}, props={self.props})"
+
+def text_node_to_html_node(text_node):
+    match text_node.text_type:
+        case TextType.TEXT:
+            return LeafNode(None, text_node.text)
+        case TextType.BOLD:
+            return LeafNode("b", text_node.text)
+        case TextType.ITALIC:
+            return LeafNode("i", text_node.text)
+        case TextType.CODE:
+            return LeafNode("code", text_node.text)
+        case TextType.LINK:
+            return LeafNode("a", text_node.text, {"href":text_node.url})
+        case TextType.IMAGE:
+            return LeafNode("img", '', {"src":text_node.url, "alt":text_node.text})
+        

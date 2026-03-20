@@ -1,6 +1,6 @@
 import unittest
-
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from textnode import TextNode, TextType
+from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
 
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
@@ -44,6 +44,17 @@ class TestHTMLNode(unittest.TestCase):
         empty_parent_node = ParentNode("span",[])
         with self.assertRaises(ValueError):
             empty_parent_node.to_html()
+
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
+
+        link_node = TextNode("This is google", TextType.LINK, "www.google.com")
+        link_html = text_node_to_html_node(link_node)
+        self.assertEqual(link_html.props, {"href":"www.google.com"})
+        self.assertEqual(link_html.to_html(), '<a href="www.google.com">This is google</a>')
 
 if __name__ == "__main__":
     unittest.main()
