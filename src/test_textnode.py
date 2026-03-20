@@ -55,6 +55,9 @@ class TestTextNode(unittest.TestCase):
                     TextNode(" word", TextType.TEXT),
                     ]
         self.assertEqual(new_nodes4, expected4)
+        node5 = TextNode("This is text with a _italic word and a **bold** word", TextType.TEXT)
+        with self.assertRaises(Exception):
+            split_nodes_delimiter([node5], "_", TextType.ITALIC)
 
 if __name__ == "__main__":
     unittest.main()
