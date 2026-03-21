@@ -56,5 +56,6 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(link_html.props, {"href":"www.google.com"})
         self.assertEqual(link_html.to_html(), '<a href="www.google.com">This is google</a>')
 
+
 if __name__ == "__main__":
     unittest.main()
