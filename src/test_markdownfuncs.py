@@ -1,6 +1,6 @@
 import unittest
 
-from markdownfuncs import BlockType, extract_markdown_images, extract_markdown_links, markdown_to_blocks, block_to_block_type
+from markdownfuncs import BlockType, extract_markdown_images, extract_markdown_links, markdown_to_blocks, block_to_block_type, extract_title
 
 class TestMarkdownFunctions(unittest.TestCase):
     def test_extract_markdown_images(self):
@@ -124,4 +124,29 @@ This is the same paragraph on a new line
              BlockType.QUOTE,
              ],
              [block_to_block_type(b) for b in blocks]
+        )
+
+    def test_extract_title(self):
+        md = """
+This is a test
+
+# Header test please work
+
+Hopefully this is fine
+"""
+        self.assertEqual(
+            extract_title(md),
+            "Header test please work"
+        )
+
+        md = """
+This is a test
+
+# Header test please work
+
+# Hopefully this is fine
+"""
+        self.assertEqual(
+            extract_title(md),
+            "Header test please work"
         )

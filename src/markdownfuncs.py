@@ -42,6 +42,18 @@ def block_to_block_type(block):
         return BlockType.O_LIST
     return BlockType.PARAGRAPH
 
+def extract_title(markdown):
+    title = re.search(r"# ([\S\s]+?)\n", markdown)
+    if title is not None:
+        return title.group(1)
+    raise Exception("no title")
 
+md = """
+This is a test
 
-        
+# Header test please work
+
+Hopefully this is fine
+"""
+
+print(extract_title(md))
