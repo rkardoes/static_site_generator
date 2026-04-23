@@ -1,4 +1,6 @@
-from textnode import TextNode, TextType
+import re
+from textnode import TextNode, TextType, text_to_textnodes
+from markdownfuncs import BlockType, markdown_to_blocks, block_to_block_type
 
 class HTMLNode():
     def __init__(self, tag=None, value=None, children=None, props=None):
@@ -61,4 +63,33 @@ def text_node_to_html_node(text_node):
             return LeafNode("a", text_node.text, {"href":text_node.url})
         case TextType.IMAGE:
             return LeafNode("img", '', {"src":text_node.url, "alt":text_node.text})
-        
+
+def markdown_to_html_node(markdown):
+    print('testing')
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        print("-----------block start-------------")
+        print(block, "------ type = ",block_to_block_type(block))
+        match block_to_block_type(block):
+            case BlockType.PARAGRAPH:
+                html = ParentNode("p",[text_node_to_html_node(t) for t in text_to_textnodes(block)])
+                print(html.to_html())
+            case BlockType.HEADING:
+                pass
+            case BlockType.CODE:
+                text = re.match(r"^```\n([\s\S]+)\n```$", block).group(1)
+                html = ParentNode("code", [text_node_to_html_node(TextNode(text, TextType.TEXT))])
+                print(html.to_html())
+            case BlockType.QUOTE:
+                html = ParentNode("blockquote", [ParentNode('p', [text_node_to_html_node(t) for t in text_to_textnodes(re.sub(r"> ", "", block))])])
+                print(html.to_html())
+            case BlockType.UO_LIST:
+                list_items = re.findall(r"- (.+)", block)
+                html = ParentNode("ul", [ParentNode("li", [text_node_to_html_node(t) for t in text_to_textnodes(i)]) for i in list_items])
+                print(html.to_html())
+            case BlockType.O_LIST:
+                list_items = re.findall(r"\d\. (.+)", block)
+                html = ParentNode("ol", [ParentNode("li", [text_node_to_html_node(t) for t in text_to_textnodes(i)]) for i in list_items])
+                print(html.to_html())
+
+        print("------------block end-------------")

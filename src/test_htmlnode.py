@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
+from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node, markdown_to_html_node
 
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
@@ -55,6 +55,79 @@ class TestHTMLNode(unittest.TestCase):
         link_html = text_node_to_html_node(link_node)
         self.assertEqual(link_html.props, {"href":"www.google.com"})
         self.assertEqual(link_html.to_html(), '<a href="www.google.com">This is google</a>')
+
+    # def test_paragraphs(self):
+    #     md = """
+    # This is **bolded** paragraph
+    # text in a p
+    # tag here
+
+    # This is another paragraph with _italic_ text and `code` here
+
+    # """
+
+    #     node = markdown_to_html_node(md)
+    #     html = node.to_html()
+    #     self.assertEqual(
+    #         html,
+    #         "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+    #     )
+
+    # def test_codeblock(self):
+    #     md = """
+    # ```
+    # This is text that _should_ remain
+    # the **same** even with inline stuff
+    # ```
+    # """
+
+    #     node = markdown_to_html_node(md)
+    #     html = node.to_html()
+    #     self.assertEqual(
+    #         html,
+    #         "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+    #     )
+
+    def test_intermediate(self):
+        md = """
+# Heading1
+
+## Heading2
+
+This is **bolded** paragraph
+
+
+
+So many extra lines
+
+
+
+
+```
+This is a code block
+```
+
+1. Ordered
+2. List
+3. YES
+
+1. Broken
+2. Ordered
+5. List
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+
+This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)
+
+- This is a list
+- with items
+
+> This is a
+> Quote block
+"""
+        markdown_to_html_node(md)
 
 
 if __name__ == "__main__":
