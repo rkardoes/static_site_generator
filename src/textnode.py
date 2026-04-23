@@ -41,8 +41,11 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 beg = TextNode(splits[0], TextType.TEXT)
                 mid = TextNode(splits[1], text_type=text_type)
                 end = TextNode(splits[2], TextType.TEXT)
-                new_nodes.extend([beg, mid])
-                new_nodes.extend(split_nodes_delimiter([end], delimiter=delimiter, text_type=text_type))
+                if beg.text != "":
+                    new_nodes.append(beg)
+                new_nodes.append(mid)
+                if end.text != "":
+                    new_nodes.extend(split_nodes_delimiter([end], delimiter=delimiter, text_type=text_type))
     return new_nodes
 
 def split_nodes_image(old_nodes):

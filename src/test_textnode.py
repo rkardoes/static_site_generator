@@ -58,6 +58,20 @@ class TestTextNode(unittest.TestCase):
         node5 = TextNode("This is text with a _italic word and a **bold** word", TextType.TEXT)
         with self.assertRaises(Exception):
             split_nodes_delimiter([node5], "_", TextType.ITALIC)
+        node6 = TextNode("This is a text with bold at the **end**", TextType.TEXT)
+        new_nodes6 = split_nodes_delimiter([node6], "**", TextType.BOLD)
+        expected6 = [
+                    TextNode("This is a text with bold at the ", TextType.TEXT),
+                    TextNode("end", TextType.BOLD),
+                    ]
+        self.assertEqual(new_nodes6, expected6)
+        node7 = TextNode("**This** is a text with bold at the beginning", TextType.TEXT)
+        new_nodes7 = split_nodes_delimiter([node7], "**", TextType.BOLD)
+        expected7 = [
+                    TextNode("This", TextType.BOLD),
+                    TextNode(" is a text with bold at the beginning", TextType.TEXT),
+                    ]
+        self.assertEqual(new_nodes7, expected7)
 
     def test_split_images(self):
         node = TextNode(

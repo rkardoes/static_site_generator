@@ -77,6 +77,8 @@ This is the same paragraph on a new line
 
 ## Heading2
 
+####### Fake Heading
+
 This is **bolded** paragraph
 
 
@@ -111,6 +113,7 @@ This is the same paragraph on a new line
         self.assertListEqual(
             [BlockType.HEADING,
              BlockType.HEADING,
+             BlockType.PARAGRAPH,
              BlockType.PARAGRAPH,
              BlockType.PARAGRAPH,
              BlockType.CODE,

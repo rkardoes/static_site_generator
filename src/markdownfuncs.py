@@ -24,7 +24,7 @@ def markdown_to_blocks(markdown):
 
 def block_to_block_type(block):
     lines = block.split("\n")
-    heading = re.match(r"^#{1,6}", lines[0]) and len(lines) == 1
+    heading = re.match(r"^#{1,6} ", lines[0]) and len(lines) == 1
     code = re.match(r"^```\n[\s\S]*\n```$", block)
     quote = all([re.match(r"^>", l) for l in lines])
     unordered = all([re.match(r"^- ", l) for l in lines])
