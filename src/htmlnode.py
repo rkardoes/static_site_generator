@@ -26,6 +26,8 @@ class LeafNode(HTMLNode):
         super().__init__(tag=tag, value=value, props=props)
 
     def to_html(self):
+        if self.tag == "img":
+            return f'<{self.tag} {self.props_to_html()}"'
         if not self.value:
             raise ValueError("all leaf nodes must have a value")
         if not self.tag:
@@ -83,9 +85,11 @@ def markdown_to_html_node(markdown):
                 html_code = ParentNode("code", [text_node_to_html_node(TextNode(text, TextType.TEXT))])
                 html = ParentNode("pre", [html_code])
             case BlockType.QUOTE:
-                text = re.sub(r"> ", "", block)
-                lines = re.split(r"\n", text)
-                html = ParentNode("blockquote", [ParentNode("p", [text_node_to_html_node(t) for t in text_to_textnodes(i)]) for i in lines])
+                lines = block.split("\n")
+                stripped_lines = [l.lstrip(">").strip() for l in lines]
+                final_lines = [l for l in stripped_lines if l != ""]
+                text = " ".join(final_lines)
+                html = ParentNode("blockquote", [text_node_to_html_node(t) for t in text_to_textnodes(text)])
             case BlockType.UO_LIST:
                 list_items = re.findall(r"- (.+)", block)
                 html = ParentNode("ul", [ParentNode("li", [text_node_to_html_node(t) for t in text_to_textnodes(i)]) for i in list_items])

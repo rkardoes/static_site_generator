@@ -111,12 +111,16 @@ _This_ text should be a paragraph.
 
 > This should be a quote
 > This is also a quote, but with **bold**
+
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
 """
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><p><i>This</i> text should be a paragraph.</p><blockquote><p>This should be a quote</p><p>This is also a quote, but with <b>bold</b></p></blockquote></div>"
+            "<div><p><i>This</i> text should be a paragraph.</p><blockquote>This should be a quote This is also a quote, but with <b>bold</b></blockquote><blockquote>\"I am in fact a Hobbit in all but size.\" -- J.R.R. Tolkien</blockquote></div>"
         )
 
     def test_unordered_lists(self):

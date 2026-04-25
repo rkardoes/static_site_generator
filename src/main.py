@@ -1,5 +1,8 @@
 import os
 import shutil
+import re
+from htmlnode import markdown_to_html_node
+from markdownfuncs import extract_title
 
 def empty_directory(dir):
     if not os.path.exists(dir):
@@ -43,8 +46,44 @@ def regen_site():
     empty_directory(dest_path)
     copy_directory(src_path, dest_path)
 
+def generate_page(src_path, template_path, dest_path):
+    print(f"Generating page from {src_path} to {dest_path} using template at {template_path}")
+    if not os.path.exists(src_path):
+        raise Exception("src path does not exist")
+    if not os.path.exists(template_path):
+        raise Exception("template path does not exist")
+    with open(src_path) as file:
+        md = file.read()
+    with open(template_path) as file:
+        template = file.read()
+    html = markdown_to_html_node(md).to_html()
+    title = extract_title(md)
+    page = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
+    if not os.path.exists(os.path.dirname(dest_path)):
+        os.makedirs(os.path.dirname(dest_path))
+    with open(dest_path, "w") as file:
+        file.write(page)
+    return
+
+def generate_pages_recursive(src_dir, template_path, dest_dir):
+    if not os.path.exists(src_dir):
+        raise Exception("src directory does not exist")
+    if not os.path.exists(template_path):
+        raise Exception("template path does not exist")
+    contents = os.listdir(src_dir)
+    for content in contents:
+        src_path = os.path.join(src_dir, content)
+        dest_path = os.path.join(dest_dir, content)
+        if os.path.isfile(src_path):
+            dest_path = dest_path.rstrip(".md") + ".html"
+            generate_page(src_path, template_path, dest_path)
+        if os.path.isdir(src_path):
+            os.mkdir(dest_path)
+            print(f"made dir: {dest_path}")
+            generate_pages_recursive(src_path, template_path, dest_path)
 
 def main():
     regen_site()
+    generate_pages_recursive("content", "template.html", "public")
 
 main()
